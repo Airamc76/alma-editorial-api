@@ -1,21 +1,13 @@
 {
   "name": "alma-editorial-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "dev": "vercel dev",
-    "build": "tsc",
-    "start": "vercel dev",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "vercel dev"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "@vercel/node": "^3.2.0",
-    "@types/node": "^24.9.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.6.3",
+    "@types/node": "^20.14.2"
   }
 }
