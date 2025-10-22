@@ -11,16 +11,25 @@ export default async function handler(req: any, res: any) {
 
   try {
     const { project_id, chapters } = req.body || {};
-    if (!project_id || !Array.isArray(chapters)) throw new Error("Faltan project_id o chapters[]");
-    const rows = chapters.map((c: any, i: number) => ({
-      id: c.id,
-      project_id,
-      idx: typeof c.idx === "number" ? c.idx : i,
-      title: c.title,
-      v1: c.v1, v2: c.v2, final: c.final,
-      status: c.status || "draft",
-      updated_at: new Date().toISOString()
-    }));
+    if (!project_id || !Array.isArray(chapters)) {
+      throw new Error("Faltan project_id o chapters[]");
+    }
+
+    const rows = chapters.map((c: any, i: number) => {
+      const row: any = {
+        project_id,
+        idx: typeof c.idx === "number" ? c.idx : i,
+        title: c.title ?? `Capítulo ${i + 1}`,
+        v1: c.v1 ?? null,
+        v2: c.v2 ?? null,
+        final: c.final ?? null,
+        status: c.status ?? "draft",
+        updated_at: new Date().toISOString(),
+      };
+      // Solo incluir id si viene definido (así Postgres usa default gen_random_uuid())
+      if (c.id) row.id = c.id;
+      return row;
+    });
 
     const { data, error } = await supabaseAdmin
       .from("chapters")
