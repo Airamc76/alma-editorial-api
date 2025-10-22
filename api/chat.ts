@@ -27,7 +27,7 @@ export default async function handler(req: any, res: any) {
       ].filter(Boolean),
     };
 
-    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+    const upstream = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,19 +36,30 @@ export default async function handler(req: any, res: any) {
       body: JSON.stringify(payload),
     });
 
-    if (!resp.ok || !resp.body) {
-      const text = await resp.text();
+    if (!upstream.ok || !upstream.body) {
+      const text = await upstream.text();
       res.setHeader("Access-Control-Allow-Origin", "*");
       return res.status(500).send(`OpenAI error: ${text}`);
     }
 
-    // Proxy del stream
+    // Encabezados SSE + CORS
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
     res.setHeader("Cache-Control", "no-cache, no-transform");
     res.setHeader("Connection", "keep-alive");
-    // @ts-ignore
-    resp.body.pipe(res);
+
+    // Leer Web ReadableStream y escribir en la respuesta Node
+    const reader = (upstream.body as ReadableStream).getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = typeof value === "string" ? value : decoder.decode(value, { stream: true });
+      res.write(chunk); // envía tal cual el SSE de OpenAI (líneas "data: ...\n\n")
+    }
+
+    res.end();
   } catch (e: any) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     return res.status(500).send(`Server error: ${e.message}`);
