@@ -1,12 +1,10 @@
 // Tipado simple para evitar fricciones: any
+import { allowCors, requireAppKey } from "./_sec";
+
 export default async function handler(req: any, res: any) {
-  // CORS preflight
-  if (req.method === "OPTIONS") {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    return res.status(200).end();
-  }
+  allowCors(req, res);
+  if (req.method === "OPTIONS") return res.status(204).end();
+  requireAppKey(req, res);
   if (req.method !== "POST") return res.status(405).send("Method not allowed");
 
   try {
@@ -38,12 +36,10 @@ export default async function handler(req: any, res: any) {
 
     if (!upstream.ok || !upstream.body) {
       const text = await upstream.text();
-      res.setHeader("Access-Control-Allow-Origin", "*");
       return res.status(500).send(`OpenAI error: ${text}`);
     }
 
-    // Encabezados SSE + CORS
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    // Encabezados SSE
     res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
     res.setHeader("Cache-Control", "no-cache, no-transform");
     res.setHeader("Connection", "keep-alive");
@@ -61,7 +57,6 @@ export default async function handler(req: any, res: any) {
 
     res.end();
   } catch (e: any) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
     return res.status(500).send(`Server error: ${e.message}`);
   }
 }
