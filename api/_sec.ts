@@ -1,46 +1,50 @@
 // api/_sec.ts
-function originMatches(origin: string, patterns: string[]) {
-  if (!origin) return false;
-  return patterns.some(p => {
-    const pat = p.trim();
-    if (pat === "*") return true;
-    if (pat === origin) return true;
-    // wildcard del tipo https://*.lovableproject.com
-    if (pat.includes("*.")) {
-      try {
-        const url = new URL(origin);
-        const host = url.host;
-        const want = new URL(pat.replace("*.", "sub.")).host.replace(/^sub\./, "");
-        return host.endsWith(want);
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  });
-}
-
-export function allowCors(req: any, res: any) {
-  const raw = (process.env.ALLOWED_ORIGIN || "*")
+function normalizeList(value?: string) {
+  return (value || "*")
     .split(",")
     .map(s => s.trim())
     .filter(Boolean);
+}
 
+function matchOrigin(origin: string, patterns: string[]) {
+  if (!origin) return false;
+  try {
+    const o = new URL(origin);
+    for (const p of patterns) {
+      if (p === "*") return true;
+      const pat = p.trim();
+      const u = new URL(pat.replace("*.", "sub.")); // para parsear
+      const wantHost = u.host.replace(/^sub\./, "");
+      const protoOK = !u.protocol || u.protocol === o.protocol;
+      if (!protoOK) continue;
+
+      // match exacto
+      if (pat.indexOf("*.") === -1 && pat === origin) return true;
+
+      // wildcard: *.dominio.tld
+      if (pat.indexOf("*.") !== -1 && o.host.endsWith(wantHost)) return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+export function allowCors(req: any, res: any) {
+  const allowList = normalizeList(process.env.ALLOWED_ORIGIN);
   const origin = req.headers.origin || "";
-  const ok = originMatches(origin, raw);
+  const ok = matchOrigin(origin, allowList);
 
-  // Refleja el origin válido o usa el primero configurado
   res.setHeader("Vary", "Origin");
-  res.setHeader("Access-Control-Allow-Origin", ok ? origin : (raw[0] || "*"));
+  res.setHeader("Access-Control-Allow-Origin", ok ? origin : "null");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 
-  // Toma los headers solicitados por el navegador en el preflight
+  // Refleja lo que pide el navegador en preflight
   const reqHeaders =
     (req.headers["access-control-request-headers"] as string) ||
     "Content-Type, x-client-id, x-app-key, Authorization";
   res.setHeader("Access-Control-Allow-Headers", reqHeaders);
 
-  // Permite cachear la respuesta de preflight
   res.setHeader("Access-Control-Max-Age", "86400");
 }
 

@@ -1,17 +1,15 @@
 // api/export-docx.ts
 import { Document, Packer, Paragraph, HeadingLevel, TextRun } from "docx";
+import { allowCors, requireAppKey } from "./_sec";
 
 function sanitize(text?: string) {
   return (text ?? "<<PENDIENTE>>").toString();
 }
 
 export default async function handler(req: any, res: any) {
-  if (req.method === "OPTIONS") {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    return res.status(200).end();
-  }
+  allowCors(req, res);
+  if (req.method === "OPTIONS") return res.status(204).end();
+  requireAppKey(req, res);
   if (req.method !== "POST") return res.status(405).send("Method not allowed");
 
   const { project, chapters } = req.body || {};
@@ -48,7 +46,6 @@ export default async function handler(req: any, res: any) {
   const buffer = await Packer.toBuffer(doc);
   const fileName = `${title.replace(/\s+/g, "_") || "Libro"}.docx`;
 
-  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
   res.send(Buffer.from(buffer));
