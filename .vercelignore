@@ -1,9 +1,4 @@
-backend/
-  .next/
-  node_modules/
-  public/
-  dist/
-  build/
-  backend/lib/supabaseAdmin.ts
-  backend/pages/api/projects/[id].ts
-  backend/pages/api/projects/index.ts
+backend/pages/api/
+backend/lib/supabaseAdmin.ts
+public/
+**/*.php

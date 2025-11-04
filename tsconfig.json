@@ -3,11 +3,11 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Node",
+    "outDir": "dist",
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "outDir": "dist",
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "lib/*": ["src/lib/*"],
@@ -16,12 +16,8 @@
   },
   "include": ["api/**/*.ts", "src/**/*.ts"],
   "exclude": [
-    "node_modules",
-    "**/*.test.ts",
-    "src/handlers/_migrated/**/*",
-    "src/handlers/**/_migrated/**/*",
-    "src/handlers/_bak/**/*",
-    "src/handlers/**/_bak/**/*",
-    "src/handlers/**/_utils/**/*"
+    "src/handlers/_migrated",
+    "src/handlers/_migrated_bak",
+    "src/handlers/_migrated*/**"
   ]
 }
