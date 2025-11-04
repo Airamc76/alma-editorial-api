@@ -4,7 +4,24 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "lib/*": ["src/lib/*"],
+      "handlers/*": ["src/handlers/*"]
+    }
   },
-  "include": ["api/**/*.ts", "src/**/*.ts"]
+  "include": ["api/**/*.ts", "src/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts",
+    "src/handlers/_migrated/**/*",
+    "src/handlers/**/_migrated/**/*",
+    "src/handlers/_bak/**/*",
+    "src/handlers/**/_bak/**/*",
+    "src/handlers/**/_utils/**/*"
+  ]
 }
