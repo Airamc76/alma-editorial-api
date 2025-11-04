@@ -3,7 +3,8 @@
   "functions": {
     "api/**": { "runtime": "nodejs22.x" }
   },
-  "buildCommand": "tsc -p tsconfig.json",
-  "outputDirectory": ".",
-  "ignoreCommand": "echo skipping static output"
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/alma.ts" }
+  ],
+  "outputDirectory": "."
 }
