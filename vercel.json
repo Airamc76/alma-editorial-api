@@ -1,9 +1,10 @@
 {
   "version": 2,
+  "framework": null,
+  "functions": {
+    "api/**": { "runtime": "nodejs22.x" }
+  },
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/alma.ts?route=$1" }
-  ],
-  "functions": {
-    "api/**": { "runtime": "nodejs20.x" }
-  }
+  ]
 }
