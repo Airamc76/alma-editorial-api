@@ -1,4 +1,4 @@
-backend/pages/api/
-backend/lib/supabaseAdmin.ts
+backend/pages/
+backend/lib/
 public/
 **/*.php
