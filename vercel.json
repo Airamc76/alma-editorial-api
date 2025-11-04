@@ -1,6 +1,12 @@
 {
   "functions": {
-    "api/**": { "runtime": "nodejs22.x" }
+    "dist/api/*.js": { "runtime": "nodejs22.x" }
   },
-  "outputDirectory": "."
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "dist/api/alma.js"
+    }
+  ],
+  "outputDirectory": "dist"
 }
