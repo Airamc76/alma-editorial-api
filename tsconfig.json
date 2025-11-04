@@ -13,15 +13,7 @@
     "paths": {
       "lib/*": ["src/lib/*"],
       "handlers/*": ["src/handlers/*"]
-    },
-    "outDir": ".vercel/output"
+    }
   },
-  "include": ["api/**/*.ts", "src/**/*.ts"],
-  "exclude": [
-    "node_modules",
-    "src/handlers/_migrated",
-    "backend",
-    ".vercel",
-    ".next"
-  ]
+  "include": ["api/**/*.ts", "src/**/*.ts"]
 }
