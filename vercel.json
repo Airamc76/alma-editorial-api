@@ -1,5 +1,11 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/alma?route=$1" }
-  ]
+  ],
+  "functions": {
+    "api/alma.ts": {
+      "maxDuration": 30,
+      "memory": 256
+    }
+  }
 }
