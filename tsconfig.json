@@ -13,7 +13,8 @@
     "paths": {
       "lib/*": ["src/lib/*"],
       "handlers/*": ["src/handlers/*"]
-    }
+    },
+    "outDir": "dist"
   },
   "include": ["api/**/*.ts", "src/**/*.ts"]
 }

@@ -1,13 +1,9 @@
 {
   "version": 2,
-  "framework": null,
-  "functions": {
-    "api/**.ts": { "runtime": "nodejs22.x" },
-    "api/**.js": { "runtime": "nodejs22.x" }
-  },
   "routes": [
-    { "src": "^/api/(.*)$", "dest": "/api/alma.ts?route=$1" }
+    { "src": "/api/(.*)", "dest": "/api/alma.ts?route=$1" }
   ],
-  "buildCommand": "",
-  "ignoreCommand": "echo ok"
+  "functions": {
+    "api/**": { "runtime": "nodejs20.x" }
+  }
 }
