@@ -1,10 +1,12 @@
 {
   "name": "alma-editorial-api",
   "version": "1.0.0",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "dev": "vercel dev",
-    "start": "vercel dev"
+    "start": "vercel dev",
+    "build": "echo \"no-op (Vercel compila /api TS)\"",
+    "vercel-build": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",
@@ -14,5 +16,8 @@
   "devDependencies": {
     "@types/node": "^20.14.2",
     "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
